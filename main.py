@@ -1,48 +1,42 @@
 import streamlit as st
 
-# 각 MBTI 유형에 맞는 직업 추천 리스트
-job_recommendations = {
-    "ISTJ": ["📊 회계사", "⚖️ 법률 전문가", "🪖 군인", "👮 경찰"],
-    "ISFJ": ["💉 간호사", "👩‍🏫 교사", "🤝 사회복지사", "📋 비서"],
-    "INFJ": ["🧠 심리학자", "📚 작가", "🌱 사회적 기업가", "📝 컨설턴트"],
-    "INTJ": ["🔬 엔지니어", "🧑‍💻 과학자", "📈 프로젝트 매니저", "📊 분석가"],
-    "ISTP": ["🛠️ 기계공", "💻 프로그램 개발자", "✈️ 조종사", "🎨 디자이너"],
-    "ISFP": ["🎨 예술가", "👗 디자이너", "🎶 음악가", "🎼 작곡가"],
-    "INFP": ["✍️ 작가", "🧠 심리학자", "🌍 사회적 활동가", "📚 편집자"],
-    "INTP": ["🔬 과학자", "💻 기술 전문가", "📊 데이터 분석가", "🎓 학자"],
-    "ESTP": ["📈 영업", "💼 마케팅 전문가", "🏃‍♂️ 운동선수", "🚀 기업가"],
-    "ESFP": ["🎬 연예인", "🎉 행사 기획자", "🎤 연출가", "📹 디지털 콘텐츠 제작자"],
-    "ENFP": ["📢 마케팅 전문가", "💬 상담가", "✍️ 작가", "🎥 디지털 콘텐츠 크리에이터"],
-    "ENTP": ["💼 사업가", "⚖️ 변호사", "💡 아이디어 기획자", "🔧 발명가"],
-    "ESTJ": ["📈 경영자", "👨‍💼 감독", "🪖 군인", "📋 조직 관리자"],
-    "ESFJ": ["💉 간호사", "👩‍🏫 교사", "🎉 사교 활동가", "📊 마케팅 전문가"],
-    "ENFJ": ["👩‍🏫 교육자", "💬 상담가", "👥 인사 전문가", "🤝 리더"],
-    "ENTJ": ["👔 CEO", "📅 프로젝트 매니저", "⚖️ 변호사", "📊 경영 전략 전문가"]
+# MBTI 유형 리스트
+mbti_types = [
+    "INTJ", "INTP", "ENTJ", "ENTP",
+    "INFJ", "INFP", "ENFJ", "ENFP",
+    "ISTJ", "ISFJ", "ESTJ", "ESFJ",
+    "ISTP", "ISFP", "ESTP", "ESFP"
+]
+
+# MBTI 궁합 추천 데이터
+mbti_matches = {
+    "INTJ": ("ENFP", "ENFP는 감정과 즉흥성을 통해 INTJ의 논리적이고 계획적인 성향을 균형 잡아줍니다."),
+    "INTP": ("ESFJ", "ESFJ는 INTP의 내향적이고 분석적인 면을 보완하며 현실적인 안정감을 줍니다."),
+    "ENTJ": ("INFP", "INFP의 따뜻함과 이상주의는 ENTJ의 추진력과 리더십을 부드럽게 완화시킵니다."),
+    "ENTP": ("INFJ", "INFJ의 깊은 통찰력은 ENTP의 창의성과 에너지에 깊이를 더합니다."),
+    "INFJ": ("ENFP", "ENFP의 외향성과 열정은 INFJ의 내향적이면서 신중한 면을 열어줍니다."),
+    "INFP": ("ENFJ", "ENFJ는 INFP의 감성을 존중하면서도 사회적 관계를 넓히는 데 도움을 줍니다."),
+    "ENFJ": ("INFP", "INFP의 진정성과 감정은 ENFJ의 지도력과 조화를 이룹니다."),
+    "ENFP": ("INTJ", "INTJ의 체계적인 사고는 ENFP의 창의성을 실현 가능하게 도와줍니다."),
+    "ISTJ": ("ESFP", "ESFP는 ISTJ의 계획성과 책임감에 생기를 불어넣습니다."),
+    "ISFJ": ("ESTP", "ESTP의 활동성과 유연함이 ISFJ의 헌신적인 성격에 활력을 줍니다."),
+    "ESTJ": ("ISFP", "ISFP의 부드러움과 감성이 ESTJ의 실용적인 성향을 부드럽게 해줍니다."),
+    "ESFJ": ("INTP", "INTP의 깊이 있는 사고는 ESFJ의 사교성과 균형을 이룹니다."),
+    "ISTP": ("ENFJ", "ENFJ는 ISTP의 고요함 속에 숨은 가치를 이끌어낼 수 있습니다."),
+    "ISFP": ("ESTJ", "ESTJ의 조직력은 ISFP의 감성을 안전하게 보호합니다."),
+    "ESTP": ("ISFJ", "ISFJ의 안정적인 성향은 ESTP의 즉흥적인 행동에 중심을 잡아줍니다."),
+    "ESFP": ("ISTJ", "ISTJ는 ESFP의 활기찬 삶에 실용적인 균형을 제공합니다."),
 }
 
-# 웹앱 제목
-st.title("🎯 MBTI에 맞는 직업 추천 웹앱 🎯")
+# Streamlit UI
+st.title("💍 MBTI 궁합 추천 웹앱")
+st.subheader("당신의 MBTI를 선택하면 결혼에 가장 적합한 궁합을 알려드릴게요!")
 
-# MBTI 유형 선택을 위한 드롭다운 메뉴
-mbti = st.selectbox("🌟 당신의 MBTI는 무엇인가요? 🌟", [
-    "ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", 
-    "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"
-])
+# 사용자 MBTI 선택
+user_mbti = st.selectbox("당신의 MBTI는 무엇인가요?", mbti_types)
 
-# MBTI 유형 선택 후 추천 직업을 보여주는 부분
-if mbti:
-    # 풍선 효과 추가
-    st.balloons()
-
-    # 추천 직업 출력
-    st.subheader(f"{mbti} 유형에 추천하는 직업 🎯")
-    st.write("다음 직업들이 잘 어울릴 수 있습니다: 🎨💼")
-    
-    for job in job_recommendations[mbti]:
-        st.write(f"- {job} 🏆")
-
-    # 추가 메시지
-    st.markdown("""
-    💡 직업 추천은 일반적인 성향을 바탕으로 한 것이므로,
-    실제로 본인의 경험과 선호도를 고려하는 것이 중요합니다! 🎯
-    """)
+if user_mbti:
+    match_mbti, reason = mbti_matches.get(user_mbti, ("알 수 없음", "해당 궁합 정보가 없습니다."))
+    st.markdown("---")
+    st.success(f"✅ 당신에게 가장 잘 맞는 결혼 MBTI는: **{match_mbti}** 입니다!")
+    st.markdown(f"**이유:** {reason}")
